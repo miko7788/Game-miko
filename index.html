@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Miko Ball - Brick Out (Neon Blue & White - Bright Game Background)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+    <style>
+        /* ================================== */
+        /* === STYLE MENU (HALAMAN 1) === */
+        /* ================================== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            /* WARNA LATAR BELAKANG MENU TETAP GELAP */
+            background: linear-gradient(to bottom, #0a0e2a, #040618);
+            font-family: 'Oxanium', sans-serif;
+            color: white;
+            position: relative;
+        }
+
+        /* --- BACKGROUND & OVERLAY --- */
+        .background-city {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('https://via.placeholder.com/1200x800/1a2a4a/ffffff?text=Cyberpunk+Cityscape');
+            background-size: cover; background-position: center;
+            opacity: 0.6; filter: brightness(0.4); z-index: 1;
+        }
+
+        .overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to top, rgba(10, 14, 42, 0.9), rgba(10, 14, 42, 0.7));
+            z-index: 2;
+        }
+
+        /* --- MENU CONTAINER & TYPOGRAPHY --- */
+        .game-container {
+            position: relative; z-index: 3; text-align: center; padding: 20px;
+            transition: opacity 0.5s ease;
+        }
+
+        .logo img {
+            width: 120px; height: 120px; border-radius: 50%;
+            background-color: #00bcd4;
+            padding: 10px;
+            box-shadow: 0 0 25px rgba(0, 188, 212, 0.7);
+            animation: pulse 2s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.05); }
+        }
+
+        .game-title {
+            font-size: 8em; font-weight: bold; text-transform: uppercase;
+            letter-spacing: 5px; margin: 40px 0 60px 0;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 40px rgba(0, 220, 255, 0.6);
+            background: linear-gradient(90deg, #e0f7fa, #80deea, #00bcd4);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        /* --- MENU BUTTONS --- */
+        .menu-button {
+            display: block; width: 300px; padding: 18px 30px;
+            margin: 20px auto;
+            background: linear-gradient(90deg, #00bcd4, #0097a7);
+            border: none; border-radius: 15px; color: white;
+            font-size: 1.8em; font-weight: bold; text-transform: uppercase;
+            text-decoration: none; box-shadow: 0 8px 25px rgba(0, 188, 212, 0.6);
+            transition: all 0.3s ease; cursor: pointer;
+            position: relative; overflow: hidden;
+        }
+
+        .menu-button:hover {
+            background: linear-gradient(90deg, #0097a7, #00bcd4);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 188, 212, 0.8);
+        }
+
+        /* --- UI ELEMENTS (Settings, Store, Version) --- */
+        .settings-icon, .store-info, .version-info { position: absolute; z-index: 4; }
+        
+        .settings-icon { top: 30px; right: 30px; width: 50px; height: 50px; background-color: rgba(255, 255, 255, 0.1); border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: background-color 0.3s ease; }
+        .store-info { bottom: 30px; left: 30px; display: flex; align-items: center; color: rgba(255, 255, 255, 0.8); font-size: 1.2em; }
+        .version-info { bottom: 30px; right: 30px; color: rgba(255, 255, 255, 0.6); font-size: 1em; }
+
+        .settings-icon img { width: 30px; height: 30px; filter: invert(1); }
+        .store-info img { width: 30px; height: 30px; margin-right: 10px; filter: brightness(0) saturate(100%) invert(100%) sepia(100%) saturate(0%) hue-rotate(270deg) brightness(100%) contrast(100%); opacity: 0.8; }
+        
+        /* --- FLOATING BLOCKS (Aesthetic) --- */
+        .floating-block {
+            position: absolute;
+            background-color: rgba(0, 188, 212, 0.3);
+            border: 2px solid rgba(0, 150, 167, 0.5);
+            box-shadow: 0 0 15px rgba(0, 188, 212, 0.6);
+            width: 60px; height: 60px;
+            transform-style: preserve-3d;
+            animation: floatAndRotate 15s infinite ease-in-out;
+            z-index: 2;
+        }
+        
+        @keyframes floatAndRotate {
+            0% { transform: translate(0, 0) rotateX(0deg) rotateY(0deg) rotateZ(0deg); opacity: 0.8; }
+            50% { transform: translate(0, -30px) rotateX(45deg) rotateY(20deg) rotateZ(10deg); opacity: 1; }
+            100% { transform: translate(0, 0) rotateX(0deg) rotateY(0deg) rotateZ(0deg); opacity: 0.8; }
+        }
+
+        /* === LOADING BAR === */
+        .loading-screen {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(10, 14, 42, 0.95);
+            display: none; justify-content: center; align-items: center;
+            flex-direction: column; z-index: 10; opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .loading-screen.active { display: flex; opacity: 1; }
+
+        .spinner {
+            width: 80px; height: 80px;
+            border: 8px solid rgb(182, 229, 183);
+            border-top-color: #00bcd4;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .loading-text {
+            margin-top: 20px; font-size: 2em; color: #00bcd4;
+            text-shadow: 0 0 10px rgba(0, 188, 212, 0.7);
+        }
+
+        /* ================================== */
+        /* === STYLE GAME (HALAMAN 2) === */
+        /* ================================== */
+        #game {
+            display: none;
+            position: relative;
+            width: 100vw; max-width: 500px;
+            height: 100vh; max-height: 720px;
+            border: 4px solid #00bcd4;
+            box-shadow: 0 0 30px #00bcd4, inset 0 0 20px rgba(0,188,212,.3);
+            background: #1a237e; /* Latar belakang Deep Blue Indigo (lebih terang) */
+            overflow: hidden;
+            touch-action: none;
+            font-family: 'Orbitron', sans-serif;
+        }
+        #game canvas { display: block; width: 100%; height: 100%; }
+        #ui {
+            position: absolute; top: 15px; left: 15px; right: 15px;
+            display: flex; justify-content: space-between;
+            color: #e0f7fa;
+            z-index: 10;
+            font-size: clamp(14px, 3.5vw, 20px);
+            text-shadow: 0 0 8px #e0f7fa;
+        }
+        
+        /* Layar Start dan Game Over */
+        #start, #over {
+            position: absolute; inset: 0;
+            background: radial-gradient(circle at center, rgba(26, 35, 126, .95), rgba(0, 0, 0, .98));
+            color: #e0f7fa; display: none;
+            flex-direction: column;
+            justify-content: center; align-items: center;
+            text-align: center; padding: 20px; z-index: 20;
+        }
+        #start h1, #over h1 {
+            font-size: clamp(36px, 10vw, 60px); margin-bottom: 15px;
+            text-shadow: 0 0 15px #00bcd4, 0 0 30px #00bcd4;
+        }
+        #start p, #over p { margin: 12px 0; font-size: clamp(14px, 4vw, 18px); opacity: .9; }
+        #start button, #over button {
+            margin-top: 25px; padding: 14px 36px;
+            font-size: clamp(16px, 4.5vw, 22px);
+            font-weight: 700; border: none; border-radius: 12px;
+            cursor: pointer; transition: .2s;
+            box-shadow: 0 0 15px #00bcd4;
+        }
+        #startBtn { background: #00bcd4; color: #040618; }
+        #restartBtn { background: #00e5ff; color: #040618; }
+        #start button:hover, #over button:hover, #start button:active, #over button:active { transform: scale(.94); box-shadow: 0 0 25px #00e5ff; }
+
+        /* Tombol Kontrol Sentuh */
+        #touch {
+            position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+            display: none; gap: 35px; z-index: 15;
+        }
+        .tbtn {
+            width: 70px; height: 70px;
+            background: rgba(0, 188, 212, .15);
+            border: 3px solid #00bcd4;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 30px; color: #e0f7fa;
+            box-shadow: 0 0 15px #00bcd4;
+        }
+        .tbtn:active { background: #00bcd4; color: #040618; transform: scale(.85); }
+
+        @media (max-width:768px) { #touch { display: flex; } }
+    </style>
+</head>
+<body>
+
+    <div class="background-city"></div>
+    <div class="overlay"></div>
+    <div class="floating-block block-1" style="top: 10%; left: 15%;"></div>
+    <div class="floating-block block-2" style="top: 80%; left: 80%; animation-delay: 3s;"></div>
+    <div class="floating-block block-3" style="top: 50%; left: 5%;"></div>
+    <div class="floating-block block-4" style="top: 25%; right: 10%; animation-delay: 5s;"></div>
+    <div class="floating-block block-5" style="top: 65%; right: 15%; animation-delay: 1s;"></div>
+    <div class="floating-block block-6" style="top: 5%; right: 50%;"></div>
+    
+    <div class="loading-screen" id="loadingScreen">
+        <div class="spinner"></div>
+        <div class="loading-text">Loading Game...</div>
+    </div>
+
+
+    <div class="game-container" id="gameMenu">
+        <div class="logo">
+            <img src="https://via.placeholder.com/100/00bcd4/ffffff?text=O" alt="Miko Ball Logo">
+        </div>
+        <h1 class="game-title"><span>Miko</span> <span>Ball</span></h1>
+
+        <a href="#" class="menu-button" id="playButton">Play</a>
+        <a href="#" class="menu-button">Options</a>
+        <a href="#" class="menu-button">Leaderboard</a>
+    </div>
+
+    <div class="settings-icon">
+        <img src="https://www.svgrepo.com/show/475471/settings-02.svg" alt="Settings">
+    </div>
+
+    <div class="store-info">
+        <img src="https://www.svgrepo.com/show/499690/coin.svg" alt="Store Icon">
+        <span>STORE</span>
+    </div>
+
+    <div class="version-info">
+        v1.0.0
+    </div>
+
+    <div id="game">
+        <canvas id="c"></canvas>
+
+        <div id="ui">
+            <div id="score">Score: 0</div>
+            <div id="lives">Lives: 3</div>
+        </div>
+
+        <div id="start">
+            <h1>MIKO BALL</h1>
+            <p id="info">PC: mouse / ← → | HP: geser / tombol</p>
+            <button id="startBtn">PLAY</button>
+        </div>
+
+        <div id="over" style="display:none">
+            <h1>GAME OVER</h1>
+            <p id="final">Score: 0</p>
+            <button id="restartBtn">PLAY AGAIN</button>
+        </div>
+
+        <div id="touch">
+            <div class="tbtn" id="leftBtn">←</div>
+            <div class="tbtn" id="rightBtn">→</div>
+        </div>
+    </div>
+
+    <script>
+        /* ================================== */
+        /* === LOGIKA MENU (HALAMAN 1) === */
+        /* ================================== */
+        const playButton = document.getElementById('playButton');
+        const gameMenu = document.getElementById('gameMenu');
+        const loadingScreen = document.getElementById('loadingScreen');
+        const gameContainer = document.getElementById('game');
+
+        playButton.addEventListener('click', function(event) {
+            event.preventDefault();
+
+            gameMenu.style.opacity = '0';
+            
+            document.querySelector('.settings-icon').style.display = 'none';
+            document.querySelector('.store-info').style.display = 'none';
+            document.querySelector('.version-info').style.display = 'none';
+            document.querySelectorAll('.floating-block').forEach(el => el.style.display = 'none');
+
+            setTimeout(() => {
+                gameMenu.style.display = 'none';
+                loadingScreen.classList.add('active');
+
+                const loadingTime = 1500;
+                
+                setTimeout(() => {
+                    loadingScreen.classList.remove('active');
+                    loadingScreen.style.display = 'none';
+                    
+                    gameContainer.style.display = 'block';
+                    
+                    startGame(); 
+
+                }, loadingTime);
+
+            }, 500);
+        });
+
+
+        /* ================================== */
+        /* === LOGIKA GAME (HALAMAN 2) === */
+        /* ================================== */
+        const canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
+        const scoreEl=document.getElementById('score'),livesEl=document.getElementById('lives');
+        const startScr=document.getElementById('start'),overScr=document.getElementById('over');
+        const finalEl=document.getElementById('final'),infoEl=document.getElementById('info');
+        const startBtn=document.getElementById('startBtn'),restartBtn=document.getElementById('restartBtn');
+        const leftBtn=document.getElementById('leftBtn'),rightBtn=document.getElementById('rightBtn');
+
+        // Konstanta untuk warna latar belakang Deep Blue Indigo
+        const GAME_BACKGROUND_COLOR = '#1a237e'; 
+
+        function resize(){canvas.width=document.getElementById('game').clientWidth;canvas.height=document.getElementById('game').clientHeight;init();}
+        window.addEventListener('resize',resize);
+
+        /* ---------- STATE ---------- */
+        let ball,paddle,bricks=[],score=0,lives=3,running=false;
+
+        /* ---------- INIT ---------- */
+        function init(){
+            const s=Math.min(canvas.width/480,canvas.height/720);
+            ball={x:canvas.width/2,y:canvas.height - 120,r:9*s,dx:3.2*s,dy:-3.2*s}; // Posisi Y bola disesuaikan
+            paddle={w:90*s,h:14*s,x:canvas.width/2-45*s,y:canvas.height - 50}; // Posisi Y paddle disesuaikan
+            createBricks(s);
+        }
+
+        // FUNGSI INI DIMODIFIKASI UNTUK WARNA BALOK NEON BIRU/CYAN LEBIH JELAS (SATURASI TINGGI, KECERAHAN TINGGI)
+        function getRandomNeonColor() {
+            // Fokus pada rentang Cyan (190) hingga Blue (220) untuk tampilan gambar
+            const hue = Math.floor(Math.random() * (220 - 190 + 1)) + 190;
+            // Saturasi sangat tinggi (95%-100%)
+            const saturation = Math.floor(Math.random() * (100 - 95 + 1)) + 95; 
+            // Lightness yang sangat tinggi (80%-95%) agar balok bersinar terang
+            const lightness = Math.floor(Math.random() * (95 - 80 + 1)) + 80; 
+            
+            return { hue, saturation, lightness };
+        }
+
+        function createBricks(s){
+            bricks=[];
+            const rows=5,cols=8,bw=48*s,bh=22*s,pad=9*s;
+            const ox=(canvas.width-cols*(bw+pad)+pad)/2,oy=90*s;
+            for(let r=0;r<rows;r++){
+                for(let c=0;c<cols;c++){
+                    // Mensimulasikan balok yang sudah terpukul di gambar
+                    let isHit = false;
+                    if (r === 0 && (c === 0 || c === 7)) isHit = true; // Balok paling atas kiri dan kanan hilang
+                    if (r === 1 && (c === 6)) isHit = true; // Contoh balok hilang di baris kedua
+                    if (r === 2 && (c === 3 || c === 4)) isHit = true; // Contoh balok hilang di baris ketiga
+                    if (r === 3 && (c === 1 || c === 2 || c === 5 || c === 6)) isHit = true; // Contoh balok hilang di baris keempat
+                    if (r === 4 && (c === 0 || c === 1 || c === 2 || c === 3 || c === 4 || c === 5 || c === 6 || c === 7)) isHit = true; // Balok paling bawah hilang semua
+
+                    const randomColor = getRandomNeonColor();
+                    bricks.push({x:c*(bw+pad)+ox,y:r*(bh+pad)+oy,w:bw,h:bh,hit:isHit, color: randomColor});
+                }
+            }
+        }
+
+        /* ---------- CONTROLS ---------- */
+        let left=false,right=false;
+        document.addEventListener('keydown',e=>{if(e.key==='ArrowLeft')left=true;if(e.key==='ArrowRight')right=true;});
+        document.addEventListener('keyup',e=>{if(e.key==='ArrowLeft')left=false;if(e.key==='ArrowRight')right=false;});
+        canvas.addEventListener('mousemove',e=>{
+            if(!running) return;
+            const r=canvas.getBoundingClientRect();
+            const mx=e.clientX-r.left;
+            paddle.x=mx-paddle.w/2;
+            if(paddle.x<0)paddle.x=0;
+            if(paddle.x+paddle.w>canvas.width)paddle.x=canvas.width-paddle.w;
+        });
+        let touchX=0;
+        canvas.addEventListener('touchstart',e=>{if(!running)return;e.preventDefault();touchX=e.touches[0].clientX;},{passive:false});
+        canvas.addEventListener('touchmove',e=>{
+            if(!running)return;
+            e.preventDefault();
+            const nx=e.touches[0].clientX,dx=nx-touchX;
+            paddle.x+=dx*.9;touchX=nx;
+            if(paddle.x<0)paddle.x=0;
+            if(paddle.x+paddle.w>canvas.width)paddle.x=canvas.width-paddle.w;
+        },{passive:false});
+        leftBtn.addEventListener('touchstart',e=>{e.preventDefault();left=true;},{passive:false});
+        leftBtn.addEventListener('touchend',()=>{left=false;});
+        rightBtn.addEventListener('touchstart',e=>{e.preventDefault();right=true;},{passive:false});
+        rightBtn.addEventListener('touchend',()=>{right=false;});
+
+        /* ---------- LOOP ---------- */
+        function loop(){
+            if(!running)return;
+            
+            ctx.fillStyle=GAME_BACKGROUND_COLOR;
+            ctx.fillRect(0,0,canvas.width,canvas.height);
+
+            /* paddle */
+            const moveSpeed = 9 * Math.min(canvas.width/480,canvas.height/720);
+            if(left && paddle.x>0)paddle.x-=moveSpeed;
+            if(right && paddle.x+paddle.w<canvas.width)paddle.x+=moveSpeed;
+
+            /* ball */
+            ball.x+=ball.dx;ball.y+=ball.dy;
+            if(ball.x-ball.r<0||ball.x+ball.r>canvas.width)ball.dx=-ball.dx;
+            if(ball.y-ball.r<0)ball.dy=-ball.dy;
+
+            /* paddle hit */
+            if(ball.y+ball.r>paddle.y && ball.y-ball.r<paddle.y+paddle.h && ball.x>paddle.x && ball.x<paddle.x+paddle.w){
+                ball.dy=-ball.dy*1.025;
+                const hit=(ball.x-paddle.x)/paddle.w;
+                ball.dx=(9 * Math.min(canvas.width/480,canvas.height/720))*(hit-0.5);
+            }
+
+            /* bricks */
+            let win=true;
+            ctx.shadowBlur=0;
+            bricks.forEach(b=>{
+                if(!b.hit && ball.x>b.x && ball.x<b.x+b.w && ball.y>b.y && ball.y<b.y+b.h){
+                    ball.dy=-ball.dy;b.hit=true;score++;scoreEl.textContent=`Score: ${score}`;
+                }
+                if(!b.hit){
+                    ctx.fillStyle=`hsl(${b.color.hue},${b.color.saturation}%,${b.color.lightness}%)`;
+                    ctx.shadowColor=`hsl(${b.color.hue},${b.color.saturation}%,${b.color.lightness + 15}%)`;
+                    ctx.shadowBlur=15;
+                    ctx.fillRect(b.x,b.y,b.w,b.h);
+                    win=false;
+                }
+            });
+
+            /* draw ball */
+            ctx.beginPath();ctx.arc(ball.x,ball.y,ball.r,0,Math.PI*2);
+            ctx.fillStyle='#e0f7fa';ctx.shadowColor='#00bcd4';ctx.shadowBlur=20;ctx.fill();
+
+            /* draw paddle */
+            ctx.shadowBlur=15;ctx.shadowColor='#00bcd4';
+            ctx.fillStyle='#e0f7fa';ctx.fillRect(paddle.x,paddle.y,paddle.w,paddle.h);
+
+            /* lose */
+            if(ball.y-ball.r>canvas.height){
+                lives--;livesEl.textContent=`Lives: ${lives}`;
+                if(lives<=0){endGame();}
+                else{resetBall();}
+            }
+
+            if(win){setTimeout(()=>{endGame(true);},150);}
+
+            requestAnimationFrame(loop);
+        }
+        function resetBall(){
+            const s=Math.min(canvas.width/480,canvas.height/720);
+            ball.x=canvas.width/2;ball.y=canvas.height - 120; // Posisi Y bola disesuaikan
+            ball.dx=3.2*s;ball.dy=-3.2*s;
+            paddle.x=canvas.width/2-paddle.w/2;
+        }
+        function startGame(){
+            resize();
+            score=2; // Skor awal disesuaikan dengan gambar
+            lives=3; // Nyawa awal disesuaikan dengan gambar
+            
+            scoreEl.textContent=`Score: ${score}`;
+            livesEl.textContent=`Lives: ${lives}`;
+            startScr.style.display='none';
+            overScr.style.display='none';
+            running=true;
+            const mob=/Mobi|Android|iPhone/i.test(navigator.userAgent);
+            infoEl.innerHTML=mob?'Geser atau tombol':'Mouse / ← →';
+            loop();
+        }
+        function endGame(isWin=false){
+            running=false;
+            finalEl.textContent=`Final Score: ${score}`;
+            overScr.style.display='flex';
+            if(isWin){
+                document.querySelector('#over h1').textContent = 'LEVEL COMPLETE!';
+                document.querySelector('#over h1').style.color = '#e0f7fa';
+                document.querySelector('#over h1').style.textShadow = '0 0 15px #00e5ff,0 0 30px #00e5ff';
+            } else {
+                document.querySelector('#over h1').textContent = 'GAME OVER';
+                document.querySelector('#over h1').style.color = '#e0f7fa';
+                document.querySelector('#over h1').style.textShadow = '0 0 15px #ff1744,0 0 30px #ff1744';
+            }
+        }
+        
+        startBtn.onclick=startGame;
+        restartBtn.onclick=startGame;
+
+        window.addEventListener('load', () => {
+            init();
+            // Tampilkan layar game secara langsung saat dimuat untuk mencocokkan gambar
+            gameMenu.style.display = 'none';
+            document.querySelector('.settings-icon').style.display = 'none';
+            document.querySelector('.store-info').style.display = 'none';
+            document.querySelector('.version-info').style.display = 'none';
+            document.querySelectorAll('.floating-block').forEach(el => el.style.display = 'none');
+            gameContainer.style.display = 'block';
+            startScr.style.display = 'flex'; // Tetap tampilkan layar start agar bisa memulai game
+            // Untuk langsung melihat game seperti di gambar, uncomment baris di bawah dan comment startScr.style.display = 'flex';
+            // startGame(); 
+        });
+    </script>
+</body>
+</html>
